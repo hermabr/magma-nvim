@@ -157,37 +157,8 @@ class Magma:
     def command_init(self, args: List[str]) -> None:
         self._initialize_if_necessary()
 
-        if args:
-            kernel_name = args[0]
-            self._initialize_buffer(kernel_name)
-        else:
-            PROMPT = "Select the kernel to launch:"
-            available_kernels = get_available_kernels()
-            if self.nvim.exec_lua("return vim.ui.select ~= nil"):
-                self.nvim.exec_lua(
-                    """
-                        vim.ui.select(
-                            {%s},
-                            {prompt = "%s"},
-                            function(choice)
-                                if choice ~= nil then
-                                    vim.cmd("MagmaInit " .. choice)
-                                end
-                            end
-                        )
-                    """
-                    % (
-                        ", ".join(repr(x) for x in available_kernels),
-                        PROMPT,
-                    )
-                )
-            else:
-                kernel_name = self._ask_for_choice(
-                    PROMPT,
-                    available_kernels,  # type: ignore
-                )
-                if kernel_name is not None:
-                    self.command_init([kernel_name])
+        kernel_name = args[0] if args else "python3"
+        self._initialize_buffer(kernel_name)
 
     def _deinit_buffer(self, magma: MagmaBuffer) -> None:
         magma.deinit()
