@@ -20,19 +20,27 @@ function EvaluateCodeBlock(skipToNextCodeBlock)
     local pattern = '# [-+]$'
     local start_row = vim.fn.search(pattern, 'bnW') + 1
     local end_row = vim.fn.search(pattern, 'nW') - 1
+    local inserted_extra_new_line = false
     if end_row == -1 then end_row = vim.fn.line('$') end
     if start_row > end_row then return end
 
-    vim.api.nvim_command('MagmaVisualSend '.. start_row .. ',' .. end_row)
+    if end_row == vim.fn.line('$') and vim.api.nvim_buf_get_lines(0, vim.fn.line('$') - 1, vim.fn.line('$'), false)[1] ~= "" then
+        vim.api.nvim_buf_set_lines(0, -1, -1, false, {""})
+        inserted_extra_new_line = true
+    end
 
-    if skipToNextCodeBlock and end_row == vim.fn.line('$') then
+    if skipToNextCodeBlock and (end_row == vim.fn.line('$') or inserted_extra_new_line) then
         vim.api.nvim_buf_set_lines(0, -1, -1, false, {"# +"})
         vim.api.nvim_buf_set_lines(0, -1, -1, false, {""})
-    elseif end_row == vim.fn.line('$') - 1 then
-        vim.api.nvim_buf_set_lines(0, -1, -1, false, {""})
     end
+    vim.api.nvim_command('MagmaVisualSend '.. start_row .. ',' .. end_row)
+
     if skipToNextCodeBlock then
-        vim.api.nvim_win_set_cursor(0, {end_row + 2, 0})
+        if inserted_extra_new_line then
+            vim.api.nvim_win_set_cursor(0, {end_row + 3, 0})
+        else
+            vim.api.nvim_win_set_cursor(0, {end_row + 2, 0})
+        end
     end
 end
 
