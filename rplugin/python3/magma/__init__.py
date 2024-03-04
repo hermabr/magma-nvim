@@ -219,6 +219,16 @@ class Magma:
         assert len(expr) == 1
         self._do_evaluate_expr(expr[0])
 
+    @pynvim.command("MagmaVisualSend", nargs="?", sync=True)
+    @nvimui
+    def commnand_magma_visual_send(self, selection) -> None:
+        lineno_begin, lineno_end = eval(selection[0])
+        span = (
+            (lineno_begin-1, 0),
+            (lineno_end, 0)
+        )
+        self._do_evaluate(span)
+
     @pynvim.command("MagmaEvaluateVisual", sync=True)  # type: ignore
     @nvimui  # type: ignore
     def command_evaluate_visual(self) -> None:
