@@ -35,3 +35,21 @@ function EvaluateCodeBlock(skipToNextCodeBlock)
         vim.api.nvim_win_set_cursor(0, {end_row + 2, 0})
     end
 end
+
+function JumpUpSection()
+    local cur_row, _ = unpack(vim.api.nvim_win_get_cursor(0))
+    local pattern = '# [-+]$'
+    local found_row = vim.fn.search(pattern, 'bnW')
+    if found_row == 0 then
+        return
+    end
+    if cur_row == found_row then
+        vim.cmd('normal! k')
+        local new_row = vim.fn.search(pattern, 'bnW')
+        vim.api.nvim_win_set_cursor(0, {found_row, 0})
+    else
+        vim.api.nvim_win_set_cursor(0, {found_row, 0})
+    end
+    vim.cmd('normal! zz')
+    vim.cmd('nohlsearch')
+end
