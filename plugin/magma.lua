@@ -53,3 +53,15 @@ function JumpUpSection()
     vim.cmd('normal! zz')
     vim.cmd('nohlsearch')
 end
+
+vim.api.nvim_set_keymap('n', 's', "<cmd>set opfunc=v:lua.MagmaVisualSendLines<CR>g@", {silent = true, noremap = true})
+vim.api.nvim_set_keymap('n', 'ss', "<cmd>MagmaEvaluateLine<CR>", {noremap = true, silent = true})
+vim.api.nvim_set_keymap('v', 's', ":<C-u>lua MagmaVisualSendLines('visual')<CR>", {silent = true, noremap = true})
+
+vim.api.nvim_set_keymap('n', 'S', "<cmd>MagmaInit python3<CR>", {noremap = true, silent = true})
+
+vim.keymap.set({'i', 'n', 'v'}, '<C-Enter>', function() EvaluateCodeBlock(false) end, {noremap = true, silent = true})
+vim.keymap.set({'i', 'n', 'v'}, '<S-Enter>', function() EvaluateCodeBlock(true) end, {noremap = true, silent = true})
+
+vim.api.nvim_set_keymap('n', '[n', ':lua JumpUpSection()<CR>', {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', ']n', '/# [-+]$<CR><CMD>noh<CR>zz', {noremap = true, silent = true})
