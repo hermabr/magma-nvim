@@ -31,7 +31,7 @@ class MagmaOptions:
             "magma_save_cell",
             os.path.join(nvim.funcs.stdpath("data"), "magma"),
         )
-        self.image_provider = nvim.vars.get("magma_image_provider", "none")
+        self.image_provider = nvim.vars.get("magma_image_provider", "kitty")
         self.copy_output = nvim.vars.get(
             "magma_copy_output", False
         )
