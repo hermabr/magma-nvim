@@ -24,9 +24,13 @@ function EvaluateCodeBlock(skipToNextCodeBlock)
     if end_row == -1 then end_row = vim.fn.line('$') end
     if start_row > end_row then return end
 
-    if end_row == vim.fn.line('$') and vim.api.nvim_buf_get_lines(0, vim.fn.line('$') - 1, vim.fn.line('$'), false)[1] ~= "" then
-        vim.api.nvim_buf_set_lines(0, -1, -1, false, {""})
-        inserted_extra_new_line = true
+    if end_row == vim.fn.line('$') then
+        if vim.api.nvim_buf_get_lines(0, vim.fn.line('$') - 1, vim.fn.line('$'), false)[1] ~= "" then
+            vim.api.nvim_buf_set_lines(0, -1, -1, false, {""})
+            inserted_extra_new_line = true
+        else
+            end_row = end_row - 1
+        end
     end
 
     if skipToNextCodeBlock and (end_row == vim.fn.line('$') or inserted_extra_new_line) then
